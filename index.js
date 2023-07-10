@@ -28,6 +28,12 @@ block.appendChild(listGoods);
 function itemGoods(categoryName) {
 
     listGoods.innerHTML = '';
+    orderGoods.innerHTML = '';
+    orderGoods.classList.remove('order-goods');
+    const error = document.querySelector('.error');
+    error.innerHTML = '';
+
+    purchasing.splice(0);
 
     goodsInfo.style.display = 'none';
     formOrder.style.display = 'none'
@@ -90,6 +96,14 @@ const formOrder = document.querySelector('.form-order')
 
 function info(x) {
 
+    orderGoods.innerHTML = '';
+    orderGoods.classList.remove('order-goods');
+
+    purchasing.splice(0);
+
+    const error = document.querySelector('.error');
+    error.innerHTML = '';
+
     formOrder.style.display = 'none';
     for (let index = 0; index < allGoods.length; index++) {
         if (x === allGoods[index].name) {
@@ -122,11 +136,11 @@ function onSubmitForm(event) {
 
     const fields = document.getElementsByClassName('field');
 
-    if(isValid(fields, quantity, storage)){
+    if (isValid(fields, quantity, storage)) {
         purchasingGoogs(city, storage, quantity)
     };
 
-    
+
 }
 
 function isValid(fields, quantity, storage) {
@@ -147,16 +161,23 @@ function isValid(fields, quantity, storage) {
         errorEl.innerHTML = 'Помилка! Введіть номер пошти!';
         return
     }
+    if (purchasing.some(p => p.name === titleInfo.textContent)) {
+        errorEl.innerHTML = 'Помилка! Замовлення оформлене!';
+        return
+    }
+
 
     errorEl.innerHTML = '';
     return true
 
 }
 
+const purchasing = [];
+const orderGoods = document.querySelector('.shoping');
+
 
 function purchasingGoogs(city, storage, quantity) {
 
-    purchasing = [];
 
     purchasing.push({
         city,
@@ -165,15 +186,14 @@ function purchasingGoogs(city, storage, quantity) {
         name: titleInfo.textContent
     })
 
-    const orderGoods = document.createElement('div');
-    orderGoods.classList.add('order-goods')
-    formOrder.appendChild(orderGoods);
+    orderGoods.classList.add('order-goods');
 
     orderGoods.innerHTML = `<span> 
     <h3>Інформація про замовлення</h3>
     Назва товару: ${titleInfo.textContent}<br>
     Місто: ${city}<br> 
     Відділення Нової пошти:  № ${storage}<br>
-     Кількість товару: ${quantity} шт.</span>`;
+    Кількість товару: ${quantity} шт.</span>`;
 
 }
+
